@@ -24,9 +24,9 @@ class AsyncThumbnailBackend(ThumbnailBackend):
             pass
         # Finally, if there is no thumbnail, we create one.
         from .tasks import create_thumbnail
-        job = create_thumbnail.delay(source.name, geometry_string, **options)
+        create_thumbnail.delay(source.name, geometry_string, **options)
         # Sometimes thumbnail generation takes quite some time, just return
         # the original image then.
-        if job:
-            thumbnail.name = file_.name
-            return thumbnail
+        
+        thumbnail.name = file_.name
+        return thumbnail
