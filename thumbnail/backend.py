@@ -1,6 +1,6 @@
 from sorl.thumbnail.base import ThumbnailBackend
 from sorl.thumbnail import default
-from sorl.thumbnail.images import ImageFile, DummyImageFile
+from sorl.thumbnail.images import ImageFile
 
 class AsyncThumbnailBackend(ThumbnailBackend):
     def get_thumbnail(self, file_, geometry_string, **options):
@@ -24,7 +24,9 @@ class AsyncThumbnailBackend(ThumbnailBackend):
             pass
         # Finally, if there is no thumbnail, we create one.
         from .tasks import create_thumbnail
-        job = create_thumbnail.delay(file_, geometry_string, **options)
-        # Sometimes thumbnail generation takes quite some time, show dummy.
+        job = create_thumbnail.delay(source.name, geometry_string, **options)
+        # Sometimes thumbnail generation takes quite some time, just return
+        # the original image then.
         if job:
-            return DummyImageFile(geometry_string)
+            thumbnail.name = file_.name
+            return thumbnail
