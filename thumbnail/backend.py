@@ -1,6 +1,9 @@
 from sorl.thumbnail.base import ThumbnailBackend
 from sorl.thumbnail import default
+from sorl.thumbnail.kvstores.base import add_prefix
+from sorl.thumbnail.helpers import serialize, deserialize
 from sorl.thumbnail.images import ImageFile
+from sorl.thumbnail.parsers import parse_geometry
 
 class AsyncThumbnailBackend(ThumbnailBackend):
     def get_thumbnail(self, file_, geometry_string, **options):
