@@ -4,10 +4,15 @@ from sorl.thumbnail.kvstores.base import add_prefix
 from sorl.thumbnail.helpers import serialize, deserialize
 from sorl.thumbnail.images import ImageFile
 from sorl.thumbnail.parsers import parse_geometry
+from sorl.thumbnail.conf import settings, defaults as default_settings
 
 class AsyncThumbnailBackend(ThumbnailBackend):
     def get_thumbnail(self, file_, geometry_string, **options):
         source = ImageFile(file_)
+
+        if settings.THUMBNAIL_PRESERVE_FORMAT:
+            options.setdefault('format', self._get_format(source))
+
         for key, value in self.default_options.items():
             options.setdefault(key, value)
         name = self._get_thumbnail_filename(source, geometry_string, options)
